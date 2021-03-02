@@ -34,3 +34,63 @@ int main()
 
 	return 0;
 }
+
+
+
+
+/*---3.2---*/
+
+#include <iostream>
+#include <string>
+#include <iomanip>
+#include <vector>	
+#include <algorithm>
+
+using std::cout;	using std::endl;		using std::cin;		using std::streamsize;		//iostream
+using std::string;			//string
+using std::setprecision;	//iomanip
+using std::vector;			//vector
+using std::sort;			//algorithm
+
+int main()
+{
+	string name;
+	cout << "Name:";
+	cin >> name;
+	cout << "Mid & Fin:";
+	double mid, fin;
+	cin >> mid >> fin;
+	cout << "Homeworks by EOF:";
+
+	double sum = 0;
+	int cntr = 0;
+	double x;
+	vector<double> homeworks;
+
+	while (cin >> x)
+	{
+		homeworks.push_back(x);
+	}
+
+	typedef	vector<double>::size_type vdsztp;
+
+	vdsztp homeworkSize = homeworks.size();
+
+	if(homeworkSize==0)
+	{ 
+		cout << "Error with none homework." << endl;
+		return 1;
+	}
+		   	 
+	sort(homeworks.begin(), homeworks.end());
+	
+	vdsztp iMedian = homeworkSize / 2;
+	double median = (homeworkSize % 2 == 0) ? (homeworks[iMedian] + homeworks[iMedian - 1]) / 2 : homeworks[iMedian];
+	   
+
+	streamsize prec = cout.precision();
+
+	cout << "Grade:" << setprecision(3) << 0.4*fin+0.2*mid+median*0.4 << setprecision(prec) << endl;
+
+	return 0;
+}
