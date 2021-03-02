@@ -1,0 +1,36 @@
+/*---3.1---*/
+
+#include <iostream>
+#include <string>
+#include <iomanip>
+
+using std::cout;	using std::endl;		using std::cin;		using std::streamsize;
+using std::string;
+using std::setprecision;	
+
+int main()
+{
+	string name;
+	cout << "Name:";
+	cin >> name;
+	cout << "Mid & Fin:";
+	double mid, fin;
+	cin >> mid >> fin;
+	cout << "Homeworks by EOF:";
+
+	double sum = 0;
+	int cntr = 0;
+	double x;
+
+	while (cin >> x)
+	{
+		cntr++;
+		sum += x;
+	}
+
+	streamsize prec = cout.precision();
+
+	cout << "Grade:" << setprecision(3) << 0.4*fin+0.2*mid+sum / cntr*0.2 << setprecision(prec) << endl;
+
+	return 0;
+}
