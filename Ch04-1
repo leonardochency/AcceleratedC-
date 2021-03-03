@@ -21,7 +21,6 @@ double median(vector<double> vec)
 	if (sz == 0)
 	{
 		throw domain_error("vector empty");
-		return 1;
 	}	
 	vdsztp	mid = sz/2;
 
@@ -40,7 +39,6 @@ double grade(double mid, double fin, const vector<double>& homeworks)
 	if (homeworks.size() == 0)
 	{
 		throw domain_error("homework empty");
-		return 1;
 	}
 	return grade(mid, fin, median(homeworks));
 }
@@ -48,10 +46,15 @@ double grade(double mid, double fin, const vector<double>& homeworks)
 
 istream& readHomeworks(istream& in, vector<double>& homeworks)
 {
-	double x;
-	while (in >> x)
+	if (in)
 	{
-		homeworks.push_back(x);
+		double x;
+		homeworks.clear();
+		while (in >> x)
+		{
+			homeworks.push_back(x);
+		}
+		in.clear();
 	}
 	return in;
 }
