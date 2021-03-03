@@ -1,0 +1,88 @@
+/*---4.1---*/
+
+#include <iostream>
+#include <string>
+#include <iomanip>
+#include <vector>	
+#include <algorithm>
+#include <stdexcept>
+
+using std::cout;	using std::endl;		using std::cin;		using std::streamsize;		using std::istream;//iostream
+using std::string;			//string
+using std::setprecision;	//iomanip
+using std::vector;			//vector
+using std::sort;			//algorithm
+using std::domain_error;	//stdexcept
+
+double median(vector<double> vec)
+{	
+	typedef vector<double>::size_type vdsztp;
+	vdsztp sz = vec.size();
+	if (sz == 0)
+	{
+		throw domain_error("vector empty");
+		return 1;
+	}	
+	vdsztp	mid = sz/2;
+
+	sort(vec.begin(), vec.end());
+	return (sz % 2 == 0) ? (vec[mid] + vec[mid - 1]) / 2 : vec[mid];
+}
+
+
+double grade(double mid, double fin, double homeworks)
+{
+	return 0.2*mid + 0.4*fin + 0.4*homeworks;
+}
+
+double grade(double mid, double fin, const vector<double>& homeworks)
+{
+	if (homeworks.size() == 0)
+	{
+		throw domain_error("homework empty");
+		return 1;
+	}
+	return grade(mid, fin, median(homeworks));
+}
+
+
+istream& readHomeworks(istream& in, vector<double>& homeworks)
+{
+	double x;
+	while (in >> x)
+	{
+		homeworks.push_back(x);
+	}
+	return in;
+}
+
+
+int main()
+{
+	string name;
+	cout << "Name:";
+	cin >> name;
+	cout << "Mid & Fin:";
+	double mid, fin;
+	cin >> mid >> fin;
+	cout << "Homeworks by EOF:";
+
+	vector<double> homeworks;
+
+	readHomeworks(cin, homeworks);
+
+	try
+	{
+		double finalGrade = grade(mid, fin, homeworks);
+		streamsize prec = cout.precision();
+		cout << "Grade:" << setprecision(3) << finalGrade << setprecision(prec) << endl;
+	}
+	catch (domain_error)
+	{
+		cout << endl << "empty homework" << endl;
+		return 1;
+	}
+
+	
+	return 0;
+}
