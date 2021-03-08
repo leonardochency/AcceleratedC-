@@ -1,0 +1,221 @@
+/*---6.1---*/
+
+#include <iostream>	
+#include <string>
+#include <list>
+
+#include "split.h"
+#include "picstring.h"
+
+using std::cin;		using std::cout;	using std::endl;		//iostream
+using std::string;	using std::getline;			//string
+using std::list;			//list
+
+int main()
+{
+	string line;
+	getline(cin, line);
+	list<string> context,frame,result;
+
+	context = split(line);
+
+	frame = frameString(context);
+
+	result = hcat(context, frame);
+
+	for (list<string>::const_iterator i = result.begin(); i != result.end(); i++)
+	{
+		cout << *i << endl;
+	}
+		
+	return 0;
+}
+
+
+
+
+
+/*---picstring.h---*/
+
+#pragma once
+#ifndef picstring_h
+#define picstring_h
+
+#include <string>
+#include <list>
+
+std::string::size_type maxString(const std::list<std::string>& str);
+std::list<std::string> frameString(const std::list<std::string>& str);
+std::list<std::string> vcat(const std::list<std::string>& top, const std::list<std::string>& bottom);
+std::list<std::string> hcat(const std::list<std::string>& left, const std::list<std::string>& right);
+#endif // !picstring_h
+
+
+
+
+
+/*---picstring.cpp---*/
+
+#include "picstring.h"
+
+#include <string>
+#include <list>
+#include <algorithm>
+#include <iterator>
+
+using std::string;
+using std::list;
+using std::max;			using std::copy;	//algorithm
+using std::back_inserter;			//iterator
+
+string::size_type maxString(const list<string>& str)
+{
+	string::size_type rtn = 0;
+	for (list<string>::const_iterator i = str.begin(); i != str.end(); i++)
+	{
+		rtn = max(rtn, (*i).size());
+	}
+	return rtn;
+}
+
+list<string> frameString(const list<string>& str)
+{
+	list<string> rtn;
+
+	string::size_type maxLen = maxString(str);
+
+	rtn.push_back(string(maxLen + 4, '*'));
+	rtn.push_back("* " + string(maxLen, ' ') + " *");
+
+	for (list<string>::const_iterator i = str.begin(); i != str.end(); i++)
+	{
+		rtn.push_back("* " + (*i) + string(maxLen - (*i).size(), ' ') + " *");
+	}
+
+	rtn.push_back("* " + string(maxLen, ' ') + " *");
+	rtn.push_back(string(maxLen + 4, '*'));
+
+	return rtn;
+}
+
+list<string> vcat(const list<string>& top, const list<string>& bottom)
+{
+	list<string> rtn;
+	rtn = top;
+	//Method 1
+	rtn.insert(rtn.end(), bottom.begin(), bottom.end());
+
+	//Method 2
+	//copy(bottom.begin(), bottom.end(), back_inserter(rtn));
+
+	//Method 3
+	//for (list<string>::const_iterator i = bottom.begin(); i != bottom.end(); i++)
+	//{
+	//	rtn.push_back(*i);
+	//}
+
+	return rtn;
+}
+
+list<string> hcat(const list<string>& left, const list<string>& right)
+{
+	list<string> rtn;
+
+	list<string>::const_iterator i, j;
+	i = left.begin();
+	j = right.begin();
+	string::size_type lLen = maxString(left) + 1;
+
+	while (i != left.end() || j != right.end())			//*
+	{
+		string line;
+		if (i != left.end())
+		{
+			line = *i++;
+			//i++;
+		}
+
+		line += string(lLen - line.size(), ' ');
+
+		if (j != right.end())
+		{
+			line += *j++;
+			//j++;
+		}
+		rtn.push_back(line);
+	}
+
+	return rtn;
+}
+
+
+
+
+
+/*---split.h---*/
+
+#pragma once
+#ifndef split_h
+#define split_h
+
+#include <string>
+#include <list>
+
+std::list<std::string> split(const std::string&);
+
+#endif // !split_h
+
+
+
+
+
+/*---split.cpp---*/
+
+#include "split.h"
+
+#include <list>
+#include <string>
+#include <cctype>
+#include <algorithm>
+
+using std::list;
+using std::string;
+using std::isspace;			//cctype
+using std::find_if;			//algorithm
+
+bool space(char c)
+{
+	return isspace(c);
+}
+
+bool notspace(char c)
+{
+	return !isspace(c);
+}
+
+list<string> split(const string& str)
+{
+	list<string> rtn;
+	string::const_iterator i, j;
+
+	i = str.begin();
+
+	while (i != str.end())
+	{
+		i = find_if(i, str.end(), notspace);
+		j = find_if(i, str.end(), space);
+
+		if (i != j)
+		{
+			rtn.push_back(string(i,j));
+		}
+		i = j;
+	}
+
+	return	rtn;
+}
+
+
+
+
+
