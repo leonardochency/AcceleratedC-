@@ -1,0 +1,115 @@
+/*---6.2---*/
+
+#include <iostream>	
+#include <string>
+#include <list>
+#include <cstdlib>
+#include <ctime>
+#include "url.h"
+
+using std::cin;		using std::cout;	using std::endl;		//iostream
+using std::string;	using std::getline;			//string
+using std::list;			//list
+using std::rand;	using std::srand;			//cstdlib
+using std::time;			//ctime
+
+
+int main()
+{
+	string line;
+	while (getline(cin, line))
+	{
+		list<string> result;
+
+		result = getUrl(line);
+
+		for (list<string>::const_iterator i = result.begin(); i != result.end(); i++)
+			cout << *i << endl;
+
+
+	}
+
+	return 0;
+}
+
+
+
+/*---url.h---*/
+
+#pragma once
+#ifndef url_h
+#define url_h
+
+#include <list>	
+#include <string>
+
+bool notUrlChar(char c);
+std::string::const_iterator getBegin(std::string::const_iterator b, std::string::const_iterator e);
+std::string::const_iterator getEnd(std::string::const_iterator b, std::string::const_iterator e);
+std::list<std::string> getUrl(const std::string& src);
+
+
+#endif // !url_h
+
+
+
+/*---url.cpp---*/
+#include <string>	
+#include <list>
+#include <algorithm>
+
+#include "url.h"
+
+using std::find_if;		using std::search;	using std::find;
+using std::list;
+using std::string;
+
+bool notUrlChar(char c)
+{
+	static const string urlLetters = "~;/?:@=&$-_.+!*'(),";
+
+	return !(find(urlLetters.begin(), urlLetters.end(), c) != urlLetters.end() || isalnum(c));
+
+}
+
+string::const_iterator getBegin(string::const_iterator b, string::const_iterator e)
+{
+	static const string sepr = "://";
+	string::const_iterator rtn;
+
+	while ((rtn = search(b, e, sepr.begin(), sepr.end()) )!= e)
+	{
+		if (rtn != b && !notUrlChar(rtn[sepr.size()]))
+		{
+			while (rtn != b && isalpha(rtn[-1]))
+				rtn--;
+			return rtn;
+		}
+		rtn += sepr.size();
+	}
+
+	return e;	
+}
+
+string::const_iterator getEnd(string::const_iterator b, string::const_iterator e)
+{
+	return find_if(b,e,notUrlChar);
+}
+
+list<string> getUrl(const string& src)
+{
+	list<string> rtn;
+
+	string::const_iterator b, e;
+	b = src.begin();
+	while (b != src.end())
+	{
+		b = getBegin(b, src.end());
+		e = getEnd(b, src.end());
+		if (b != e)
+			rtn.push_back(string(b, e));
+		b = e;
+	}
+	   
+	return rtn;
+}
