@@ -57,12 +57,13 @@ std::list<std::string> getUrl(const std::string& src);
 #include <string>	
 #include <list>
 #include <algorithm>
-
+#include <cctype>
 #include "url.h"
 
 using std::find_if;		using std::search;	using std::find;
 using std::list;
 using std::string;
+using std::isalnum;		using std::isalpha;		//cctype
 
 bool notUrlChar(char c)
 {
