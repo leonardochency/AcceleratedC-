@@ -76,11 +76,11 @@ bool notUrlChar(char c)
 string::const_iterator getBegin(string::const_iterator b, string::const_iterator e)
 {
 	static const string sepr = "://";
-	string::const_iterator rtn;
+	string::const_iterator rtn=b;
 
-	while ((rtn = search(b, e, sepr.begin(), sepr.end()) )!= e)
+	while ((rtn = search(rtn, e, sepr.begin(), sepr.end()) )!= e)
 	{
-		if (rtn != b && !notUrlChar(rtn[sepr.size()]))
+		if (isalpha(rtn[-1]) && !notUrlChar(rtn[sepr.size()]))
 		{
 			while (rtn != b && isalpha(rtn[-1]))
 				rtn--;
