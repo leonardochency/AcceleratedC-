@@ -175,6 +175,8 @@ bool comprStudent(const Student&, const Student&);
 
 /*---student.cpp---*/
 #include "student.h"
+#include <iostream>
+#include <vector>
 using std::istream;
 using std::vector;
 
